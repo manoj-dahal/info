@@ -1,0 +1,10 @@
+{
+  "name": "Manoj Dahal — Web Developer",
+  "short_name": "Manoj Dahal",
+  "description": "Portfolio of Manoj Dahal, web developer and designer in Kathmandu, Nepal.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#efeee9",
+  "theme_color": "#111111",
+  "icons": [{ "src": "images/profile.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

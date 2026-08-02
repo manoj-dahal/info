@@ -1,0 +1,33 @@
+services:
+  portfolio:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      PORTFOLIO_DB_HOST: ${PORTFOLIO_DB_HOST:-db}
+      PORTFOLIO_DB_NAME: ${PORTFOLIO_DB_NAME:-portfolio}
+      PORTFOLIO_DB_USER: ${PORTFOLIO_DB_USER:-portfolio}
+      PORTFOLIO_DB_PASSWORD: ${PORTFOLIO_DB_PASSWORD:-portfolio_local_only}
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: ${PORTFOLIO_DB_NAME:-portfolio}
+      MYSQL_USER: ${PORTFOLIO_DB_USER:-portfolio}
+      MYSQL_PASSWORD: ${PORTFOLIO_DB_PASSWORD:-portfolio_local_only}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_local_only}
+    volumes:
+      - portfolio_mysql:/var/lib/mysql
+      - ./php/db_setup.sql:/docker-entrypoint-initdb.d/01-db_setup.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$$MYSQL_USER -p$$MYSQL_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+volumes:
+  portfolio_mysql:
